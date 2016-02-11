@@ -15,6 +15,8 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <returns></returns>
 		public static IServiceCollection AddApiMappers([NotNull] this IServiceCollection services, Assembly mappersAssembly)
 		{
+			var MapperInterfaceTypes = new[] { typeof(IApiMapper<,>), typeof(IApiMapperAsync<,>) };
+
 			var potentialServiceTypes = mappersAssembly.GetTypes()
 				.Select(x => new
 				{
@@ -35,7 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
 						type = x,
 						info = x.GetTypeInfo()
 					})
-					.Where(x => x.info.IsGenericType && x.info.GetGenericTypeDefinition() == typeof(IApiMapper<,>))
+					.Where(x => x.info.IsGenericType && MapperInterfaceTypes.Contains(x.info.GetGenericTypeDefinition()))
 					.Select(x => x.type);
 
 				foreach (var service in serviceInterfaces)

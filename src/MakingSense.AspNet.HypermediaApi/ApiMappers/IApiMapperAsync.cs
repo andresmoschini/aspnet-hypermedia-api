@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace MakingSense.AspNet.HypermediaApi.ApiMappers
 {
-	public interface IApiMapper<TIn, TOut>
+	public interface IApiMapperAsync<TIn, TOut>
 	{
-		void Fill(TIn input, TOut output);
+		Task FillAsync(TIn input, TOut output);
 	}
 }
