@@ -30,10 +30,10 @@ namespace MakingSense.AspNet.HypermediaApi.ApiMappers
 		protected abstract void Fill(TProjection input, TOut output);
 
 		/// <summary>
-		/// Maps queriable results to an enumerable of an intermediate representation (projection)
+		/// Maps queryable results to an enumerable of an intermediate representation (projection)
 		/// </summary>
 		/// <remarks>
-		/// Take into account that queriable results could contains null values
+		/// Take into account that queryable results could contains null values
 		/// </remarks>
 		protected abstract IEnumerable<TProjection> MapToProjection(IQueryable<TIn> queriable);
 	}
