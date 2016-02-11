@@ -12,6 +12,11 @@ namespace MakingSense.AspNet.Utilities
 			return value ? true : (bool?)null;
 		}
 
+		public static bool IsTruthy(this bool? value)
+		{
+			return value.GetValueOrDefault();
+		}
+
 		public static T? NullIfDefault<T>(this T value)
 			where T : struct
 		{
