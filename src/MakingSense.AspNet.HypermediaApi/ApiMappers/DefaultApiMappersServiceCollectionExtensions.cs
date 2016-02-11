@@ -26,6 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection
 				.Where(x => !x.info.IsAbstract
 					&& !x.info.IsInterface
 					&& x.info.IsPublic
+					&& !x.info.IsAbstract
 					&& x.info.Namespace != null)
 				.Select(x => x.type);
 
