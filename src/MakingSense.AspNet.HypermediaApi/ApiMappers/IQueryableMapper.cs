@@ -8,5 +8,6 @@ namespace MakingSense.AspNet.HypermediaApi.ApiMappers
 	public interface IQueryableMapper<TIn, TOut>
 	{
 		IEnumerable<TOut> Map(IQueryable<TIn> queriable);
+		Task<IEnumerable<TOut>> MapAsync(IQueryable<TIn> queriable);
 	}
 }
