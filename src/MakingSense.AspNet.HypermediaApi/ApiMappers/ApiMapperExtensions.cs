@@ -1,5 +1,6 @@
 ﻿using MakingSense.AspNet.Abstractions;
 using MakingSense.AspNet.HypermediaApi.Model;
+using MakingSense.AspNet.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +57,25 @@ namespace MakingSense.AspNet.HypermediaApi.ApiMappers
 			return output;
 		}
 
+		public static async Task<TOut> MapAsync<TIn, TOut>(this IApiMapperAsync<TIn, TOut> mapper, TIn input)
+			where TOut : class, new()
+		{
+			if (input == null)
+			{
+				return null;
+			}
+
+			var output = new TOut();
+			await mapper.FillAsync(input, output);
+			return output;
+		}
+
+		public static TOut Map<TIn, TOut>(this IApiMapperAsync<TIn, TOut> mapper, TIn input)
+			where TOut : class, new()
+		{
+			return mapper.MapAsync(input).WaitAndGetValue();
+		}
+
 		public static IEnumerable<TOut> Map<TIn, TOut>(this IApiMapper<TIn, TOut> mapper, IEnumerable<TIn> inputEnumerable)
 			where TOut : class, new()
 		{
@@ -63,6 +83,26 @@ namespace MakingSense.AspNet.HypermediaApi.ApiMappers
 			return
 				queryableProyector != null ? queryableProyector.Map(inputEnumerable.AsQueryable())
 				: inputEnumerable.Select(x => mapper.Map(x));
+		}
+
+		public static async Task<IEnumerable<TOut>> MapAsync<TIn, TOut>(this IApiMapperAsync<TIn, TOut> mapper, IEnumerable<TIn> inputEnumerable)
+			where TOut : class, new()
+		{
+			return await Task.WhenAll(inputEnumerable.Select(x => mapper.MapAsync(x)).ToArray());
+
+			// If I want to execute each asynchronous task at a time:
+			// var results = new List<TOut>();
+			// foreach (var inputItem in inputEnumerable)
+			// {
+			// 	results.Add(await mapper.MapAsync(inputItem));
+			// }
+			// return results;
+		}
+
+		public static IEnumerable<TOut> Map<TIn, TOut>(this IApiMapperAsync<TIn, TOut> mapper, IEnumerable<TIn> inputEnumerable)
+			where TOut : class, new()
+		{
+			return mapper.MapAsync(inputEnumerable).WaitAndGetValue();
 		}
 
 		public static IEnumerable<TOut> Map<TIn, TOut>(this IApiMapper<TIn, TOut> mapper, IQueryable<TIn> inputQueryable)
